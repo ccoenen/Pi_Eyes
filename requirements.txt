@@ -1,0 +1,6 @@
+numpy
+pi3d
+svg.path
+rpi-gpio
+adafruit-blinka
+adafruit-circuitpython-ads1x15

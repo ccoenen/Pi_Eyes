@@ -11,11 +11,11 @@ import pi3d
 import random
 import threading
 import time
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from svg.path import Path, parse_path
 from xml.dom.minidom import parse
 from gfxutil import *
-from snake_eyes_bonnet import SnakeEyesBonnet
+# from snake_eyes_bonnet import SnakeEyesBonnet
 
 # INPUT CONFIG for eye motion ----------------------------------------------
 # ANALOG INPUTS REQUIRE SNAKE EYES BONNET
@@ -36,8 +36,8 @@ AUTOBLINK       = True  # If True, eye blinks autonomously
 
 # GPIO initialization ------------------------------------------------------
 
-GPIO.setmode(GPIO.BCM)
-if BLINK_PIN >= 0: GPIO.setup(BLINK_PIN , GPIO.IN, pull_up_down=GPIO.PUD_UP)
+# GPIO.setmode(GPIO.BCM)
+#if BLINK_PIN >= 0: GPIO.setup(BLINK_PIN , GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 # ADC stuff ----------------------------------------------------------------
@@ -45,12 +45,12 @@ if BLINK_PIN >= 0: GPIO.setup(BLINK_PIN , GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # ADC channels are read and stored in a separate thread to avoid slowdown
 # from blocking operations. The animation loop can read at its leisure.
 
-if JOYSTICK_X_IN >= 0 or JOYSTICK_Y_IN >= 0 or PUPIL_IN >= 0:
-	bonnet = SnakeEyesBonnet(daemon=True)
-	bonnet.setup_channel(JOYSTICK_X_IN, reverse=JOYSTICK_X_FLIP)
-	bonnet.setup_channel(JOYSTICK_Y_IN, reverse=JOYSTICK_Y_FLIP)
-	bonnet.setup_channel(PUPIL_IN, reverse=PUPIL_IN_FLIP)
-	bonnet.start()
+#if JOYSTICK_X_IN >= 0 or JOYSTICK_Y_IN >= 0 or PUPIL_IN >= 0:
+#	bonnet = SnakeEyesBonnet(daemon=True)
+#	bonnet.setup_channel(JOYSTICK_X_IN, reverse=JOYSTICK_X_FLIP)
+#	bonnet.setup_channel(JOYSTICK_Y_IN, reverse=JOYSTICK_Y_FLIP)
+#	bonnet.setup_channel(PUPIL_IN, reverse=PUPIL_IN_FLIP)
+#	bonnet.start()
 
 
 # Load SVG file, extract paths & convert to point lists --------------------
@@ -335,24 +335,17 @@ def frame(p):
 	if blinkState: # Eye currently winking/blinking?
 		# Check if blink time has elapsed...
 		if (now - blinkStartTime) >= blinkDuration:
-			# Yes...increment blink state, unless...
-			if (blinkState == 1 and # Enblinking and...
-			    (BLINK_PIN >= 0 and    # blink pin held
-			     GPIO.input(BLINK_PIN) == GPIO.LOW)):
-				# Don't advance yet; eye is held closed
-				pass
+			blinkState += 1
+			if blinkState > 2:
+				blinkState = 0 # NOBLINK
 			else:
-				blinkState += 1
-				if blinkState > 2:
-					blinkState = 0 # NOBLINK
-				else:
-					blinkDuration *= 2.0
-					blinkStartTime = now
-	else:
-		if BLINK_PIN >= 0 and GPIO.input(BLINK_PIN) == GPIO.LOW:
-			blinkState     = 1 # ENBLINK
-			blinkStartTime = now
-			blinkDuration  = random.uniform(0.035, 0.06)
+				blinkDuration *= 2.0
+				blinkStartTime = now
+	#else:
+		#if BLINK_PIN >= 0 and GPIO.input(BLINK_PIN) == GPIO.LOW:
+		#	blinkState     = 1 # ENBLINK
+		#	blinkStartTime = now
+		#	blinkDuration  = random.uniform(0.035, 0.06)
 
 	if TRACKING:
 		# 0 = fully up, 1 = fully down
