@@ -76,15 +76,18 @@ lowerLidEdgePts   = get_points(dom, "lowerLidEdge"  , 33, False, False)
 
 # Set up display and initialize pi3d ---------------------------------------
 
-DISPLAY = pi3d.Display.create(samples=4, display_config=pi3d.DISPLAY_CONFIG_HIDE_CURSOR)
+DISPLAY = pi3d.Display.create(x=20, y=20, w=720, h=1280, samples=2, display_config=pi3d.DISPLAY_CONFIG_HIDE_CURSOR|pi3d.DISPLAY_CONFIG_NO_FRAME, frames_per_second=60)
+#DISPLAY.resize(10, 10, 30, 30)
 DISPLAY.set_background(0, 0, 0, 1) # r,g,b,alpha
 
 # eyeRadius is the size, in pixels, at which the whole eye will be rendered.
-if DISPLAY.width <= (DISPLAY.height * 2):
+#if DISPLAY.width <= (DISPLAY.height * 2):
 	# For WorldEye, eye size is -almost- full screen height
-	eyeRadius   = DISPLAY.height / 2.1
-else:
-	eyeRadius   = DISPLAY.height * 2 / 5
+#	eyeRadius   = DISPLAY.height / 2.1
+#else:
+#	eyeRadius   = DISPLAY.height * 2 / 5
+
+eyeRadius = 200
 
 # A 2D camera is used, mostly to allow for pixel-accurate eye placement,
 # but also because perspective isn't really helpful or needed here, and
